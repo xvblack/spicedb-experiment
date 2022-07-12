@@ -1,0 +1,16 @@
+definition workday/user {}
+
+definition workday/org {
+  relation parent: workday/org
+  relation child: workday/org
+  relation admin: workday/user
+  relation member: workday/user
+
+  permission is_admin = admin + parent->is_admin
+}
+
+definition workday/profile {
+    relation belong_to : workday/org
+    relation self : workday/user
+    permission read = self + belong_to->is_admin
+}
