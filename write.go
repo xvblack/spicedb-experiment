@@ -12,9 +12,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func run_write() {
+func run_write(addr string) {
 	client, err := authzed.NewClient(
-		"localhost:50051",
+		addr,
 		grpc.WithPerRPCCredentials(secureMetadataCreds{"authorization": "Bearer " + "somerandomkeyhere"}),
 		// grpcutil.WithBearerToken(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
