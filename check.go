@@ -14,14 +14,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type secureMetadataCreds map[string]string
-
-func (c secureMetadataCreds) RequireTransportSecurity() bool { return false }
-func (c secureMetadataCreds) GetRequestMetadata(context.Context, ...string) (map[string]string, error) {
-	return c, nil
-}
-
-func main() {
+func run_check() {
 	client, err := authzed.NewClient(
 		"localhost:50051",
 		grpc.WithPerRPCCredentials(secureMetadataCreds{"authorization": "Bearer " + "somerandomkeyhere"}),
@@ -38,7 +31,8 @@ func main() {
 
 	start := time.Now()
 	for k := 0; ; k++ {
-		i := k % 3125
+		// i := k % 3125
+		i := 0
 		this_round := time.Now()
 		resp, err := client.LookupResources(
 			ctx,
