@@ -31,9 +31,10 @@ func run_check(addr string) {
 
 	start := time.Now()
 	for k := 0; ; k++ {
-		// i := k % 3125
-		i := 0
 		this_round := time.Now()
+		// i := k % 3125
+
+		i := 0
 		resp, err := client.LookupResources(
 			ctx,
 			&pb.LookupResourcesRequest{
@@ -60,15 +61,16 @@ func run_check(addr string) {
 			count++
 		}
 		log.Printf("%d relations looked up in %dus", count, time.Now().Sub(this_round).Microseconds())
+
 		// client.CheckPermission(
 		// 	ctx,
 		// 	&pb.CheckPermissionRequest{
 		// 		// Consistency: &v1.Consistency{},
 		// 		Resource: &v1.ObjectReference{
-		// 			ObjectType: "workday/profile",
-		// 			ObjectId:   strconv.Itoa(i),
+		// 			ObjectType: "workday/system_role",
+		// 			ObjectId:   "SINGLETON",
 		// 		},
-		// 		Permission: "read",
+		// 		Permission: "any_profile_read",
 		// 		Subject: &v1.SubjectReference{
 		// 			Object: &v1.ObjectReference{
 		// 				ObjectType: "workday/user",
@@ -78,6 +80,8 @@ func run_check(addr string) {
 		// 		},
 		// 	},
 		// )
+		// log.Printf("system role checked in %dus", time.Now().Sub(this_round).Microseconds())
+
 	}
 	end := time.Now()
 	log.Printf("Spent %dus time", end.Sub(start).Microseconds()/100)

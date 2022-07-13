@@ -14,3 +14,8 @@ definition workday/profile {
     relation self : workday/user
     permission read = self + belong_to->is_admin
 }
+
+definition workday/system_role {
+    relation profile : workday/profile
+    permission any_profile_read = profile->read
+}

@@ -78,30 +78,40 @@ func run_write(addr string) {
 					},
 				},
 			})
-			// relations = append(relations, &pb.RelationshipUpdate{
-			// 	Operation: pb.RelationshipUpdate_OPERATION_TOUCH,
-			// 	Relationship: &v1.Relationship{
-			// 		Resource: &v1.ObjectReference{
-			// 			ObjectType: "workday/profile",
-			// 			ObjectId:   strconv.Itoa(i*leafSize + leaf),
-			// 		},
-			// 		Relation: "self",
-			// 		Subject: &v1.SubjectReference{
-			// 			Object: org,
-			// 		},
-			// 	},
-			// })
+			relations = append(relations, &pb.RelationshipUpdate{
+				Operation: pb.RelationshipUpdate_OPERATION_TOUCH,
+				Relationship: &v1.Relationship{
+					Resource: &v1.ObjectReference{
+						ObjectType: "workday/system_role",
+						ObjectId:   "SINGLETON",
+					},
+					Relation: "profile",
+					Subject: &v1.SubjectReference{
+						Object: &v1.ObjectReference{
+							ObjectType: "workday/profile",
+							ObjectId:   strconv.Itoa(i*leafSize + leaf),
+						},
+					},
+				},
+			})
 		}
 	}
 	log.Printf("Total number of relations %d", len(relations))
 
-	resp, err := client.WriteRelationships(ctx, &pb.WriteRelationshipsRequest{
-		Updates: relations,
-	})
-	if err != nil {
-		log.Fatalf("failed to check permission: %s", err)
+	for i := 0; i < len(relations); i += 5000 {
+		end := i + 5000
+		if end > len(relations) {
+			end = len(relations)
+		}
+		resp, err := client.WriteRelationships(ctx, &pb.WriteRelationshipsRequest{
+			Updates: relations[i:end],
+		})
+		if err != nil {
+			log.Fatalf("failed to check permission: %s", err)
+		}
+		log.Print(resp.String())
+
 	}
-	log.Print(resp.String())
 
 	// resp, err = client.CheckPermission(ctx, &pb.CheckPermissionRequest{
 	// 	Resource:   firstPost,
