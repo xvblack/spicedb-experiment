@@ -8,23 +8,9 @@ import (
 	pb "github.com/authzed/authzed-go/proto/authzed/api/v1"
 	v1 "github.com/authzed/authzed-go/proto/authzed/api/v1"
 	"github.com/authzed/authzed-go/v1"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
-func run_write(addr string) {
-	client, err := authzed.NewClient(
-		addr,
-		grpc.WithPerRPCCredentials(secureMetadataCreds{"authorization": "Bearer " + "somerandomkeyhere"}),
-		// grpcutil.WithBearerToken(),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithInsecure(),
-		// grpcutil.WithSystemCerts(grpcutil.SkipVerifyCA),
-	)
-	if err != nil {
-		log.Fatalf("unable to initialize client: %s", err)
-	}
-
+func run_write(client *authzed.Client) {
 	ctx := context.Background()
 
 	relations := make([]*v1.RelationshipUpdate, 0)

@@ -10,34 +10,21 @@ import (
 	pb "github.com/authzed/authzed-go/proto/authzed/api/v1"
 	v1 "github.com/authzed/authzed-go/proto/authzed/api/v1"
 	"github.com/authzed/authzed-go/v1"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
-func run_check(addr string) {
-	client, err := authzed.NewClient(
-		addr,
-		grpc.WithPerRPCCredentials(secureMetadataCreds{"authorization": "Bearer " + "somerandomkeyhere"}),
-		// grpcutil.WithBearerToken(),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithInsecure(),
-		// grpcutil.WithSystemCerts(grpcutil.SkipVerifyCA),
-	)
+func run_check(client *authzed.Client) {
+
 	ctx := context.Background()
-
-	if err != nil {
-		log.Fatalf("unable to initialize client: %s", err)
-	}
-
 	start := time.Now()
-	for k := 0; ; k++ {
+	for k := 0; k < 100000; k++ {
 		this_round := time.Now()
-		// i := k % 3125
+		i := k % 3125
 
-		i := 0
+		// i := 0
 		resp, err := client.LookupResources(
 			ctx,
 			&pb.LookupResourcesRequest{
+				// Consistency: Consistency_FullyConsistent{},
 				ResourceObjectType: "workday/profile",
 				Permission:         "read",
 				Subject: &v1.SubjectReference{
